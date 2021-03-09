@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Carrito{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-9">
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                        <th>Producto</th>
+                        <th></th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                    </thead>
+                    <tbody>
+                        <form action="{{ url_for('shop.cart') }}" method="post">
+                            {% for l in lines %}
+                            <tr>
+                                <td>
+                                    <img src="{{ l.product_image_base64 }}" class="card-img-top" style="width: 25%;"
+                                        alt="..." onerror="this.src='/static/imgs/default-pro.jpg'">
+                                </td>
+                                <td class="content-left">{{ l.product_name }}</td>
+                                <td>Q{{ l.price_unit }}</td>
+                                <td>
+                                    <input type="number" id="quantity" name="quantity" class="form-control"
+                                        value="{{l.quantity}}" min="1" step="1" required>
+                                </td>
+                                <td>Q{{ l.price_unit * (request.form['quantity'] or l.quantity) }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <button type="submit" class="btn btn-primary">Actualizar carrito</a>
+                            </tr>
+                        </form>
+                    </tbody>
+                </table>
+
+                {% if g.cart_quantity and g.cart_quantity > 0 %}
+                <!--div>
+                    <a href="{{ url_for('shop.cart') }}" class="btn btn-primary">Actualizar carrito</a>
+                </div-->
+                {% else %}
+                <div>
+                    <div class="col-6">
+                        <div class="alert alert-danger">El carrito está vacío</div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="mb-3">
+                <b>Total: Q{{ total }}</b>
+            </div>
+            <div class="mb-3">
+                <a href="{{ url_for('shop.payment') }}" class="btn btn-primary">Pagar ahora</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
