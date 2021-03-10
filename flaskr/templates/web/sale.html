@@ -28,10 +28,10 @@
                                 <td>{{ s.date.strftime('%d/%m/%Y %H:%M:%S') }}</td>
                                 <td>{{ s.customer_name }}</td>
                                 <td>
-                                    {% if s.stae == 'draft' %}
-                                    Borrador
+                                    {% if s.state == 'draft' %}
+                                    Borrador (Carrito)
                                     {% elif s.state == 'payment' %}
-                                    Abierto
+                                    Abierto (Pendiente de pago)
                                     {% elif s.state == 'done' %}
                                     Realizado
                                     {% endif %}

@@ -37,5 +37,3 @@ Windows cmd, usar 'set' en lugar de 'export':
 ```
 waitress-serve --call 'flaskr:create_app'
 ```
-
-'\xfe\xe2\xc9\x8f\x8f\nP+\x811\xc1Q\x13\x85qQ'

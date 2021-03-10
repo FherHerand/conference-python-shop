@@ -26,7 +26,7 @@
                         <img src="{{ p.image_base64 }}" class="card-img-top" alt="..."
                             onerror="this.src='/static/imgs/default-pro.jpg'">
                         <div class="card-body">
-                            <h5 class="card-title">{{ p.name }}</h5>
+                            <h5 class="card-title">{{ '[{0}] {1}'.format(p.code, p.name) }}</h5>
                             <p class="card-text">{{ 'Q%0.2f'|format(p.price_unit | float) }}</p>
                             <p class="card-text">{{ p.category_name }}</p>
                             <div>

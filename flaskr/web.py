@@ -97,7 +97,6 @@ def customer():
     customers = db.execute('''
         SELECT *
         FROM user
-        WHERE type='portal'
         ORDER BY name
     ''').fetchall()
     return render_template('web/customer.html', customers=customers)

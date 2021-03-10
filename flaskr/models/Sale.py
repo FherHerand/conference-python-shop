@@ -6,11 +6,17 @@ class SaleOrderModel():
         self._customer_id = customer_id
         self._state = state#draft,payment,done
         self._id = id
-        #self._line_ids = []
         
     def add_line(self, line):
         line.save()
-        #self._line_ids.append(line)
+    
+    def remove_line(self, line_id):
+        db = get_db()
+        db.execute('''
+            DELETE FROM sale_order_line
+            WHERE id = ?
+        ''', (line_id,))
+        db.commit()
     
     def get_lines(self):
         lines = get_db().execute('''
@@ -20,6 +26,52 @@ class SaleOrderModel():
             WHERE order_id=?
         ''', (self._id,))
         return lines
+    
+    def update_qty_line(self, add, line_id):
+        db = get_db()
+        db.execute('''
+            UPDATE sale_order_line
+            SET quantity = CASE 
+                WHEN quantity+? > 0 THEN quantity+?
+                ELSE quantity
+            END
+            WHERE id = ?
+        ''', (add, add, line_id,))
+        db.commit()
+    
+    def get_line_id_by_product_id(self, product_id):
+        db = get_db()
+        l = db.execute('''
+            SELECT id FROM sale_order_line WHERE product_id=? AND order_id=?
+        ''', (product_id, self._id,)).fetchone()
+        
+        id = l[0] if l is not None else None
+        return id
+
+    def get_total(self):
+        db = get_db()
+        total = db.execute('''
+            SELECT SUM(quantity*price_unit) FROM sale_order_line WHERE order_id = ?
+        ''', (self._id,)).fetchone()[0] or 0.00
+        return total
+    
+    def get_quantity(self):
+        db = get_db()
+        qty = int(db.execute('''
+                SELECT SUM(quantity) FROM sale_order_line WHERE order_id = ?
+            ''', (self._id,)).fetchone()[0] or 0)
+        return qty
+        
+    def pay(self, payment_method):
+        if payment_method.pay(self.get_total()):
+            db = get_db()
+            db.execute('''
+                INSERT INTO payment(name, amount, order_id) VALUES(?, ?, ?)
+            ''', (payment_method.name(), self.get_total(), self._id))
+            db.execute('''
+                UPDATE sale_order SET state=? WHERE id=?
+            ''', ('done', self._id,))
+            db.commit()
     
     def get_id(self):
         return self._id
@@ -38,13 +90,6 @@ class SaleOrderModel():
             self._id = cur.lastrowid
         db.commit()
         
-    def paided(self):
-        db = get_db()
-        if self._id:
-            db.execute('''
-                UPDATE sale_order SET state=? WHERE id=?
-            ''', ('done', self._id,))
-        db.commit()
         
 class SaleOrderLineModel():
     

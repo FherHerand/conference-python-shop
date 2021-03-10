@@ -84,11 +84,7 @@ def load_logged_in_user():
         ''', (user_id,)).fetchone()
         if o:
             g.cart_order = Sale.SaleOrderModel(o['customer_id'], o['state'], o['id'])
-            g.cart_quantity = int(db.execute('''
-                SELECT SUM(quantity) FROM sale_order_line WHERE order_id = ?
-            ''', (o['id'],)).fetchone()[0] or 0)
-    
-    
+            g.cart_quantity = g.cart_order.get_quantity()
         
 @bp.route('/logout')
 def logout():
