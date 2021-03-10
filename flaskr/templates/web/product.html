@@ -1,0 +1,45 @@
+{% extends 'base_web.html' %}
+
+{% block header %}
+<h1>{% block title %}Productos{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <th> </th>
+                        <th>ID</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Precio unitario</th>
+                        <th>Categoría</th>
+                        <th>Imagen</th>
+                    </thead>
+                    <tbody>
+                        <form action="{{ url_for('web.product') }}" method="post">
+                            {% for p in products %}
+                            <tr>
+                                <td><a href="{{ url_for('web.product', id=p.id, delete=true) }}"
+                                        class="btn btn-danger">X</a></td>
+                                <td>{{ p.id }}</td>
+                                <td>{{ p.code }}</td>
+                                <td>{{ p.name }}</td>
+                                <td>{{ p.price_unit }}</td>
+                                <td>{{ p.category_name }}</td>
+                                <td>
+                                    <img src="{{ p.image_base64 }}" style="width: 30%;">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -13,85 +13,114 @@ bp = Blueprint('web', __name__, url_prefix='/web')
 @login_internal_required
 def index():
     db = get_db()
-    posts = db.execute(
-        'SELECT p.id, title, body, created, author_id, username'
-        ' FROM post p JOIN user u ON p.author_id = u.id'
-        ' ORDER BY created DESC'
-    ).fetchall()
-    return render_template('web/index.html', posts=posts)
+    customers_count = db.execute('''
+        SELECT COUNT(*)
+        FROM user
+    ''').fetchone()[0] or 0
+    products_count = db.execute('''
+        SELECT COUNT(*)
+        FROM product
+    ''').fetchone()[0] or 0
+    sales_sum = db.execute('''
+        SELECT SUM(l.quantity*l.price_unit)
+        FROM sale_order_line l
+        JOIN sale_order s ON l.order_id = s.id
+        WHERE s.state = 'done'
+    ''').fetchone()[0] or 0.00
+    sales_count = db.execute('''
+        SELECT COUNT(*)
+        FROM sale_order
+        WHERE state = 'done'
+    ''').fetchone()[0] or 0
+    payments_sum = db.execute('''
+        SELECT SUM(amount)
+        FROM payment
+    ''').fetchone()[0] or 0.00
+    payments_count = db.execute('''
+        SELECT COUNT(*)
+        FROM payment
+    ''').fetchone()[0] or 0
+    
+    return render_template('web/index.html',
+                           customers_count=customers_count,
+                           products_count=products_count,
+                           sales_sum=sales_sum, sales_count=sales_count,
+                           payments_sum=payments_sum, payments_count=payments_count)
 
+@bp.route('/user')
 @login_internal_required
-def create():
-    if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
-        error = None
-
-        if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                'INSERT INTO post (title, body, author_id)'
-                ' VALUES (?, ?, ?)',
-                (title, body, g.user['id'])
-            )
-            db.commit()
-            return redirect(url_for('blog.index'))
-
-    return render_template('blog/create.html')
-
-def get_post(id, check_author=True):
-    post = get_db().execute(
-        'SELECT p.id, title, body, created, author_id, username'
-        ' FROM post p JOIN user u ON p.author_id = u.id'
-        ' WHERE p.id = ?',
-        (id,)
-    ).fetchone()
-
-    if post is None:
-        abort(404, "Post id {0} doesn't exist.".format(id))
-
-    if check_author and post['author_id'] != g.user['id']:
-        abort(403)
-
-    return post
-
-@bp.route('/<int:id>/update', methods=('GET', 'POST'))
-@login_internal_required
-def update(id):
-    post = get_post(id)
-
-    if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
-        error = None
-
-        if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                'UPDATE post SET title = ?, body = ?'
-                ' WHERE id = ?',
-                (title, body, id)
-            )
-            db.commit()
-            return redirect(url_for('blog.index'))
-
-    return render_template('blog/update.html', post=post)
-
-@bp.route('/<int:id>/delete', methods=('POST',))
-@login_internal_required
-def delete(id):
-    get_post(id)
+def user():
     db = get_db()
-    db.execute('DELETE FROM post WHERE id = ?', (id,))
-    db.commit()
-    return redirect(url_for('blog.index'))
+    users = db.execute('''
+        SELECT *
+        FROM user
+        WHERE type='internal'
+        ORDER BY name
+    ''').fetchall()
+    return render_template('web/user.html', users=users)
+
+@bp.route('/sale')
+@login_internal_required
+def sale():
+    db = get_db()
+    sales = db.execute('''
+        SELECT 
+            s.*,
+            u.name as customer_name,
+            (SELECT
+                SUM(quantity*price_unit)
+                FROM sale_order_line
+                WHERE order_id=s.id
+            ) as total
+        FROM sale_order s
+        JOIN user u ON s.customer_id = u.id
+        ORDER BY s.date
+    ''').fetchall()
+    return render_template('web/sale.html', sales=sales)
+
+@bp.route('/payment')
+@login_internal_required
+def payment():
+    db = get_db()
+    payments = db.execute('''
+        SELECT p.*, s.id as order_name
+        FROM payment p
+        JOIN sale_order s ON p.order_id = s.id
+        ORDER BY p.date
+    ''').fetchall()
+    return render_template('web/payment.html', payments=payments)
+
+@bp.route('/customer')
+@login_internal_required
+def customer():
+    db = get_db()
+    customers = db.execute('''
+        SELECT *
+        FROM user
+        WHERE type='portal'
+        ORDER BY name
+    ''').fetchall()
+    return render_template('web/customer.html', customers=customers)
+
+@bp.route('/product')
+@login_internal_required
+def product():
+    db = get_db()
+    products = db.execute('''
+        SELECT p.*, pc.name as category_name
+        FROM product p
+        JOIN product_category pc ON p.category_id = pc.id
+        ORDER BY p.name
+    ''').fetchall()
+    return render_template('web/product.html', products=products)
+
+@bp.route('/product_category')
+@login_internal_required
+def product_category():
+    db = get_db()
+    categories = db.execute('''
+        SELECT *
+        FROM product_category
+        ORDER BY name
+    ''').fetchall()
+    return render_template('web/product_category.html', categories=categories)

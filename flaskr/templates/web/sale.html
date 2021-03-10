@@ -1,0 +1,49 @@
+{% extends 'base_web.html' %}
+
+{% block header %}
+<h1>{% block title %}Pedidos{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <th> </th>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Estado</th>
+                        <th>Total</th>
+                    </thead>
+                    <tbody>
+                        <form action="{{ url_for('web.sale') }}" method="post">
+                            {% for s in sales %}
+                            <tr>
+                                <td><a href="{{ url_for('web.sale', id=s.id, delete=true) }}"
+                                        class="btn btn-danger">X</a></td>
+                                <td>{{ s.id }}</td>
+                                <td>{{ s.date.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                                <td>{{ s.customer_name }}</td>
+                                <td>
+                                    {% if s.stae == 'draft' %}
+                                    Borrador
+                                    {% elif s.state == 'payment' %}
+                                    Abierto
+                                    {% elif s.state == 'done' %}
+                                    Realizado
+                                    {% endif %}
+                                </td>
+                                <td>{{ 'Q%0.2f'|format(s.total|float) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

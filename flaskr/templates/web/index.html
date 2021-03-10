@@ -1,0 +1,56 @@
+{% extends 'base_web.html' %}
+
+{% block header %}
+<h1>{% block title %}Inicio{% endblock %}</h1>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Clientes</h5>
+                    <p class="card-text">{{ customers_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Productos</h5>
+                    <p class="card-text">{{ products_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Ventas</h5>
+                    <p class="card-text">{{ sales_count }} pedido(s)</p>
+                    <p class="card-text">{{ 'Q%0.2f'|format(sales_sum|float) }} en total</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Pagos</h5>
+                    <p class="card-text">{{ payments_count }} pago(s)</p>
+                    <p class="card-text">{{ 'Q%0.2f'|format(payments_sum|float) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

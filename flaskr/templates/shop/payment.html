@@ -1,12 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'base_shop.html' %}
 
-{% block title %}Carrito{% endblock %}
+{% block title %}Pago{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-9">
-            <b>Pago con tarjeta</b>
+            <b>TOTAL A PAGAR: {{ 'Q%0.2f'|format(total | float) }}</b>
+            <hr />
+            <img src="/static/imgs/card-cert.png" class="card-img-top" alt="..." style="width: 10%;">
             <form action="{{ url_for('shop.payment', type='card') }}" method="post">
                 <div class="mb-3">
                     <label for="name">Nombre</label>
@@ -19,7 +21,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="name">CVV/CVC</label>
-                    <input type="text" class="form-control" name="cvv" id="cvv" required>
+                    <input type="password" class="form-control" name="cvv" id="cvv" required>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
@@ -32,7 +34,7 @@
                             <option value="05">Mayo</option>
                             <option value="06">Junio</option>
                             <option value="07">Julio</option>
-                            <option value="08">Agosot</option>
+                            <option value="08">Agosto</option>
                             <option value="09">Septiembre</option>
                             <option value="10">Octubre</option>
                             <option value="11">Noviembre</option>
@@ -41,23 +43,16 @@
                     </div>
                     <div class="col-md-3">
                         <label></label>
-                        <input type="number" class="form-control" name="year" id="year" value="2021" min="2021" step="1" required>
-                        <!--select class="form-control" name="year" id="year">
-                            <option value="20">2020</option>
-                            <option value="21">2021</option>
-                            <option value="22">2022</option>
-                            <option value="23">2023</option>
-                            <option value="24">2024</option>
-                            <option value="25">2025</option>
-                            <option value="26">2025</option>
-                        </select--->
+                        <input type="number" class="form-control" name="year" id="year" value="2021" min="2021" step="1"
+                            required>
                     </div>
                 </div>
                 <div class="mb-3"></div>
                 <input type="submit" class="btn btn-primary" value="Pagar con tarjeta">
             </form>
-            <hr/>
-            <b>Pago con Paypal</b>
+            <hr />
+
+            <img src="/static/imgs/paypal.png" class="card-img-top" alt="..." style="width: 10%;">
             <form action="{{ url_for('shop.payment', type='paypal') }}" method="post">
                 <div class="mb-3">
                     <label for="username">Usuario</label>

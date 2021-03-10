@@ -1,0 +1,41 @@
+{% extends 'base_web.html' %}
+
+{% block header %}
+<h1>{% block title %}Pagos{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <th> </th>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Nombre</th>
+                        <th>Orden</th>
+                        <th>Monto</th>
+                    </thead>
+                    <tbody>
+                        <form action="{{ url_for('web.payment') }}" method="post">
+                            {% for p in payments %}
+                            <tr>
+                                <td><a href="{{ url_for('web.payment', id=p.id, delete=true) }}"
+                                        class="btn btn-danger">X</a></td>
+                                <td>{{ p.id }}</td>
+                                <td>{{ p.date.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                                <td>{{ p.name }}</td>
+                                <td>{{ p.order_name }}</td>
+                                <td>{{ 'Q%0.2f'|format(p.amount|float) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

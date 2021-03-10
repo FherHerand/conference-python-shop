@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'base_shop.html' %}
 
-{% block title %}Shop{% endblock %}
+{% block title %}Inicio{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -27,7 +27,7 @@
                             onerror="this.src='/static/imgs/default-pro.jpg'">
                         <div class="card-body">
                             <h5 class="card-title">{{ p.name }}</h5>
-                            <p class="card-text">Q{{ p.price_unit }}</p>
+                            <p class="card-text">{{ 'Q%0.2f'|format(p.price_unit | float) }}</p>
                             <p class="card-text">{{ p.category_name }}</p>
                             <div>
                                 <a href="{{ url_for('shop.product', id=p.id) }}" class="btn btn-primary">Agregar</a>

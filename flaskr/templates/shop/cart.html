@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_shop.html' %}
 
 {% block title %}Carrito{% endblock %}
 
@@ -9,6 +9,7 @@
             <div>
                 <table class="table table-striped">
                     <thead>
+                        <th> </th>
                         <th>Producto</th>
                         <th></th>
                         <th>Precio</th>
@@ -19,31 +20,27 @@
                         <form action="{{ url_for('shop.cart') }}" method="post">
                             {% for l in lines %}
                             <tr>
+                                <td><a href="{{ url_for('shop.cart', id=l.id, delete=true) }}"
+                                        class="btn btn-danger">X</a></td>
                                 <td>
                                     <img src="{{ l.product_image_base64 }}" class="card-img-top" style="width: 25%;"
                                         alt="..." onerror="this.src='/static/imgs/default-pro.jpg'">
                                 </td>
-                                <td class="content-left">{{ l.product_name }}</td>
-                                <td>Q{{ l.price_unit }}</td>
+                                <td>{{ l.product_name }}</td>
+                                <td>{{ 'Q%0.2f'|format(l.price_unit|float) }}</td>
                                 <td>
-                                    <input type="number" id="quantity" name="quantity" class="form-control"
-                                        value="{{l.quantity}}" min="1" step="1" required>
+                                    <a href="{{ url_for('shop.cart', id=l.id, add=-1) }}" class="btn btn-primary">-</a>
+                                    {{ '%0.0f'|format(l.quantity)|int }}
+                                    <a href="{{ url_for('shop.cart', id=l.id, add=1) }}" class="btn btn-primary">+</a>
                                 </td>
-                                <td>Q{{ l.price_unit * (request.form['quantity'] or l.quantity) }}</td>
+                                <td>{{ 'Q%0.2f'|format(l.price_unit * (request.form['quantity'] or l.quantity)|float)}}</td>
                             </tr>
                             {% endfor %}
-                            <tr>
-                                <button type="submit" class="btn btn-primary">Actualizar carrito</a>
-                            </tr>
                         </form>
                     </tbody>
                 </table>
 
-                {% if g.cart_quantity and g.cart_quantity > 0 %}
-                <!--div>
-                    <a href="{{ url_for('shop.cart') }}" class="btn btn-primary">Actualizar carrito</a>
-                </div-->
-                {% else %}
+                {% if not g.cart_quantity or g.cart_quantity == 0 %}
                 <div>
                     <div class="col-6">
                         <div class="alert alert-danger">El carrito está vacío</div>
@@ -53,12 +50,14 @@
             </div>
         </div>
         <div class="col-3">
+            {% if total > 0 %}
             <div class="mb-3">
-                <b>Total: Q{{ total }}</b>
+                <b>Total: {{ 'Q%0.2f'|format(total | float) }}</b>
             </div>
             <div class="mb-3">
                 <a href="{{ url_for('shop.payment') }}" class="btn btn-primary">Pagar ahora</a>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>

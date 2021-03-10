@@ -1,0 +1,45 @@
+{% extends 'base_web.html' %}
+
+{% block header %}
+<h1>{% block title %}Usuarios{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <th> </th>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Usuario</th>
+                        <th>Tipo</th>
+                    </thead>
+                    <tbody>
+                        <form action="{{ url_for('web.user') }}" method="post">
+                            {% for u in users %}
+                            <tr>
+                                <td><a href="{{ url_for('web.user', id=u.id, delete=true) }}"
+                                        class="btn btn-danger">X</a></td>
+                                <td>{{ u.id }}</td>
+                                <td>{{ u.name }}</td>
+                                <td>{{ u.username }}</td>
+                                <td>
+                                    {% if u.type == 'internal' %}
+                                    Interno (web y shop)
+                                    {% elif u.type == 'portal' %}
+                                    Portal (solo shop)
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

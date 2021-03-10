@@ -65,6 +65,8 @@ def product(id):
             else: 
                 order = Sale.SaleOrderModel(g.user['id'], 'draft')
                 order.save()
+                line = Sale.SaleOrderLineModel(product['id'], quantity, product['price_unit'], order.get_id(), None)
+                order.add_line(line)
                 
             return redirect(url_for('shop.cart'))
 
@@ -101,11 +103,34 @@ def cart():
 
         flash(error)
     elif request.method == 'GET':
+        db = get_db()
+        
+        line_id = request.args.get('id', None)
+        if line_id:
+            delete = request.args.get('delete', False)
+            if delete:
+                db.execute('''
+                    DELETE FROM sale_order_line
+                    WHERE id = ?
+                ''', (line_id,))
+                db.commit()
+            else:
+                add = request.args.get('add', 0)
+                db.execute('''
+                    UPDATE sale_order_line
+                    SET quantity = CASE 
+                        WHEN quantity+? > 0 THEN quantity+?
+                        ELSE quantity
+                    END
+                    WHERE id = ?
+                ''', (add, add, line_id,))
+                db.commit()
+                
         lines = []
         total = 0.00
         if g.cart_order:
             lines = g.cart_order.get_lines()
-            total = get_db().execute('''
+            total = db.execute('''
                 SELECT SUM(quantity*price_unit) FROM sale_order_line WHERE order_id = ?
             ''', (g.cart_order.get_id(),)).fetchone()[0] or 0.00
             
@@ -130,9 +155,17 @@ def payment():
             success_payment = False
         
         if success_payment:
+            #pay = new PaymentModel(total)
             g.cart_order.paided()
             
         
         return redirect(url_for('shop.index'))
-    elif request.method == 'GET':    
-        return render_template('shop/payment.html')
+    elif request.method == 'GET':
+        db = get_db()
+        total = 0.00
+        if g.cart_order:
+            total = db.execute('''
+                SELECT SUM(quantity*price_unit) FROM sale_order_line WHERE order_id = ?
+            ''', (g.cart_order.get_id(),)).fetchone()[0] or 0.00
+            
+        return render_template('shop/payment.html', total=total)

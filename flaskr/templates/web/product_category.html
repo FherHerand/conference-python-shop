@@ -1,0 +1,35 @@
+{% extends 'base_web.html' %}
+
+{% block header %}
+<h1>{% block title %}Categorías{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <th> </th>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                    </thead>
+                    <tbody>
+                        <form action="{{ url_for('web.product_category') }}" method="post">
+                            {% for c in categories %}
+                            <tr>
+                                <td><a href="{{ url_for('web.product_category', id=c.id, delete=true) }}"
+                                        class="btn btn-danger">X</a></td>
+                                <td>{{ c.id }}</td>
+                                <td>{{ c.name }}</td>
+                            </tr>
+                            {% endfor %}
+                        </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -3,7 +3,6 @@ DROP TABLE IF EXISTS sale_order_line;
 DROP TABLE IF EXISTS sale_order;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS product_category;
-DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS user;
 
 CREATE TABLE user (
@@ -15,15 +14,9 @@ CREATE TABLE user (
 );
 INSERT INTO USER(name, username, password, type)
 VALUES('Administrador', 'admin', 'pbkdf2:sha256:150000$quqc7hq5$51bf3b35c9161e849f9b364dda2daaf562564c3d19e59ac10dda0664e9338b93', 'internal');
+INSERT INTO USER(name, username, password, type)
+VALUES('Cliente', 'cliente', 'pbkdf2:sha256:150000$quqc7hq5$51bf3b35c9161e849f9b364dda2daaf562564c3d19e59ac10dda0664e9338b93', 'portal');
 
-CREATE TABLE post (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  author_id INTEGER NOT NULL,
-  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  title TEXT NOT NULL,
-  body TEXT NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES user (id)
-);
 
 CREATE TABLE product_category (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
