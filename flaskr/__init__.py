@@ -32,10 +32,11 @@ def create_app(test_config=None):
 
     from . import shop
     app.register_blueprint(shop.bp)
-    app.add_url_rule('/shop', endpoint='index')
+    app.add_url_rule('/shop', endpoint='shop.index')
+    app.add_url_rule('/', endpoint='shop.index')
     
     from . import web
     app.register_blueprint(web.bp)
-    app.add_url_rule('/web', endpoint='index')
+    app.add_url_rule('/web', endpoint='web.index')
 
     return app

@@ -1,6 +1,17 @@
 # conference-python-shop-example
 
-Ejemplo hecho con el [tutorial oficial de Flask](https://flask.palletsprojects.com/en/1.1.x/tutorial/) y la documentación de [Bootstrap 5.0](https://getbootstrap.com/docs/5.0)
+Ejemplo hecho con el [La documentación de Flask](https://flask.palletsprojects.com/en/1.1.x/) y la documentación de [Bootstrap 5.0](https://getbootstrap.com/docs/5.0)
+
+## Activar el ambiente (opcional)
+
+```
+$ . venv/bin/activate
+```
+
+En Windows:
+```
+> venv\Scripts\activate
+```
 
 ## Inicializar base de datos
 ```
