@@ -22,7 +22,7 @@ flask init-db
 Linux y Mac:
 ```
 $ export FLASK_APP=flaskr
-$ export FLASK_ENV=development
+$ 
 $ flask run
 ```
 
@@ -36,4 +36,8 @@ Windows cmd, usar 'set' en lugar de 'export':
 ## Ejecutar aplicación modo producción
 ```
 waitress-serve --call 'flaskr:create_app'
+```
+
+```
+
 ```

@@ -22,8 +22,8 @@ CREATE TABLE product_category (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL
 );
-INSERT INTO product_category(id, name) values(1, 'Ninguno');
-INSERT INTO product_category(id, name) values(2, 'Ninguno2');
+INSERT INTO product_category(id, name) values(1, 'CAT1');
+INSERT INTO product_category(id, name) values(2, 'CAT2');
 
 CREATE TABLE product (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,8 +34,11 @@ CREATE TABLE product (
   category_id INTEGER NOT NULL,
   FOREIGN KEY (category_id) REFERENCES product_category (id)
 );
-INSERT INTO product (code, name, price_unit, category_id) VALUES('PRO1', 'Producto prueba 1 ', 12.99, 1);
-INSERT INTO product (code, name, price_unit, category_id) VALUES('PRO2', 'Producto prueba 2', 1.99, 2);
+INSERT INTO product (code, name, price_unit, category_id) VALUES('PRO1', 'Producto prueba 1', 12.99, 1);
+INSERT INTO product (code, name, price_unit, category_id) VALUES('PRO2', 'Producto prueba 2', 2.99, 1);
+INSERT INTO product (code, name, price_unit, category_id) VALUES('PRO3', 'Producto prueba 3', 1.99, 2);
+INSERT INTO product (code, name, price_unit, category_id) VALUES('PRO4', 'Producto prueba 4', 3.99, 2);
+INSERT INTO product (code, name, price_unit, category_id) VALUES('PRO5', 'Producto prueba 5', 20.99, 2);
 
 
 CREATE TABLE sale_order (
