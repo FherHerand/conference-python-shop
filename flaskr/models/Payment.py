@@ -1,3 +1,5 @@
+from flaskr.db import get_db
+
 class PaymentInterface:
     
     def pay(self, amount):
@@ -34,4 +36,16 @@ class PaypalPayment(PaymentInterface):
     def name(self):
         return 'Paypal'
     
+class PaymentModel():
     
+    def __init__(self, name, amount, order_id):
+        self._name = name
+        self._amount = amount
+        self._order_id = order_id
+        
+    def save(self):
+        db = get_db()
+        db.execute('''
+            INSERT INTO payment(name, amount, order_id) VALUES(?, ?, ?)
+        ''', (self._name, self._amount, self._order_id,))
+        db.commit()

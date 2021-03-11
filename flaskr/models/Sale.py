@@ -1,3 +1,4 @@
+from flaskr.models.Payment import PaymentModel
 from flaskr.db import get_db
 
 class SaleOrderModel():
@@ -63,15 +64,12 @@ class SaleOrderModel():
         return qty
         
     def pay(self, payment_method):
-        if payment_method.pay(self.get_total()):
-            db = get_db()
-            db.execute('''
-                INSERT INTO payment(name, amount, order_id) VALUES(?, ?, ?)
-            ''', (payment_method.name(), self.get_total(), self._id))
-            db.execute('''
-                UPDATE sale_order SET state=? WHERE id=?
-            ''', ('done', self._id,))
-            db.commit()
+        total = self.get_total()
+        if payment_method.pay(total):
+            payment = PaymentModel(payment_method.name(), total, self._id)
+            payment.save()
+            self._state = 'done'
+            self.save()
     
     def get_id(self):
         return self._id

@@ -9,7 +9,7 @@
             <b>TOTAL A PAGAR: {{ 'Q%0.2f'|format(total | float) }}</b>
             <hr />
             <img src="/static/imgs/card-cert.png" class="card-img-top" alt="..." style="width: 10%;">
-            <!--form action="{{ url_for('shop.payment', type='card') }}" method="post">
+            <form action="{{ url_for('shop.payment', type='card') }}" method="post">
                 <div class="mb-3">
                     <label for="name">Nombre</label>
                     <input class="form-control" name="name" id="name" value="{{ request.form['name'] }}" required>
@@ -49,11 +49,11 @@
                 </div>
                 <div class="mb-3"></div>
                 <input type="submit" class="btn btn-primary" value="Pagar con tarjeta">
-            </form-->
+            </form>
             <hr />
 
             <img src="/static/imgs/paypal.png" class="card-img-top" alt="..." style="width: 10%;">
-            <!--form action="{{ url_for('shop.payment', type='paypal') }}" method="post">
+            <form action="{{ url_for('shop.payment', type='paypal') }}" method="post">
                 <div class="mb-3">
                     <label for="email">Correo</label>
                     <input type="email" class="form-control" name="email" id="email" value="{{ request.form['email'] }}"
@@ -64,7 +64,7 @@
                     <input type="password" class="form-control" name="password" id="password" required>
                 </div>
                 <input type="submit" class="btn btn-primary" value="Pagar con Paypal">
-            </form-->
+            </form>
 
 
         </div>
