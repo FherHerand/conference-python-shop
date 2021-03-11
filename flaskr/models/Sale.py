@@ -54,7 +54,7 @@ class SaleOrderModel():
         total = db.execute('''
             SELECT SUM(quantity*price_unit) FROM sale_order_line WHERE order_id = ?
         ''', (self._id,)).fetchone()[0] or 0.00
-        return total
+        return round(total, 2)
     
     def get_quantity(self):
         db = get_db()
