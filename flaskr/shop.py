@@ -109,22 +109,7 @@ def payment():
         if g.cart_order:
             total = g.cart_order.get_total()
             
-            payment_method = None
-            if type == 'card':
-                name = request.form['name']
-                card_number = request.form['card_number']
-                cvv = request.form['cvv']
-                year = request.form['year']
-                month = request.form['month']
-                expiration_date = '{0}/{1}'.format(month, year)
-                payment_method = Payment.CardPayment(name, card_number, cvv, expiration_date)
-            elif type == 'paypal':
-                email = request.form['email']
-                password = request.form['password']
-                payment_method = Payment.PaypalPayment(email, password)
             
-            if payment_method:
-                g.cart_order.pay(payment_method)
             
         return redirect(url_for('shop.index'))
     elif request.method == 'GET':
