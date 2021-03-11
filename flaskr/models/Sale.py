@@ -64,8 +64,15 @@ class SaleOrderModel():
         return qty
         
     def pay(self, payment_method):
-        pass
-    
+        total = self.get_total()
+        if payment_method.pay(total):
+            payment = PaymentModel(payment_method.name(), total, self._id)
+            payment.save()
+            
+            self._state = 'done'
+            self.save()
+            return True
+        
     def get_id(self):
         return self._id
     

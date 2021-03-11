@@ -1,3 +1,4 @@
+
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -5,7 +6,7 @@ from werkzeug.exceptions import abort
 
 from flaskr.auth import login_required
 from flaskr.db import get_db
-from flaskr.models import Sale, Payment, Product
+from flaskr.models import Sale, Product, Payment
 
 bp = Blueprint('shop', __name__, url_prefix='/shop')
 
@@ -109,7 +110,22 @@ def payment():
         if g.cart_order:
             total = g.cart_order.get_total()
             
+            payment_method = None
+            if type == 'card':
+                name = request.form['name']
+                card_number = request.form['card_number']
+                cvv = request.form['cvv']
+                month = request.form['month']
+                year = request.form['year']
+                expiration_date = '{0}/{1}'.format(month, year)
+                payment_method = Payment.CardPaymentStrategy(name, card_number, cvv, expiration_date)
+            elif type == 'paypal':
+                email = request.form['email']
+                password = request.form['password']
+                payment_method = Payment.PaypalPaymentStrategy(email, password)
             
+            if payment_method:
+                g.cart_order.pay(payment_method)
             
         return redirect(url_for('shop.index'))
     elif request.method == 'GET':
